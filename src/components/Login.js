@@ -1,20 +1,76 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
+import axios from 'axios';
 
 const Login = () => {
+  
+  const { push } = useHistory();
+
+  let token = localStorage.getItem( "token" );
+
+  const [ loginCred, setLoginCred ] = useState( {
+    username: "",
+    password: ""
+  } );
+
+  const [ error, setError ] = useState( "" );
+  
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
-  const error = "";
-  //replace with error state
+  const changeHandler = e => {
+    setLoginCred( {
+      ...loginCred,
+      [ e.target.name ]: e.target.value
+    } );
+  };
+
+  const submitHandler = e => {
+    e.preventDefault();
+    axios.post( 'http://localhost:5000/api/login', loginCred )
+      .then( res => {
+        console.log( 'res', res.data.payload );
+        localStorage.setItem( "token", res.data.payload );
+        push("/bubbles")
+      } )
+      .catch( err => {
+        setError("Username or Password incorrect. Please see Readme")
+      })
+  }
 
   return (
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
+        <form
+          onSubmit={submitHandler}
+        >
+          <div>
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={loginCred.username}
+              onChange={changeHandler}
+              data-testid="username"
+            />
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={loginCred.password}
+              onChange={changeHandler}
+              data-testid="password"
+            />
+          </div>
+          <button type="submit" >Login</button>
+        </form>
       </div>
 
-      <p data-testid="errorMessage" className="error">{error}</p>
+      <p data-testid="errorMessage" className="error" >{error}</p>
     </div>
   );
 };
