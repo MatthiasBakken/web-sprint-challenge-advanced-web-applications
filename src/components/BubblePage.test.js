@@ -14,5 +14,4 @@ test("Renders appropriate number of colors passed in through mock", async ()=> {
     })
     render( <BubblePage /> );
     await waitFor( () => expect( screen.queryAllByTestId( "circle" ) ).toHaveLength(11) );
-
 });
