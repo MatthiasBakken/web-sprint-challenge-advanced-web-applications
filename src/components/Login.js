@@ -9,12 +9,12 @@ const Login = () => {
 
   let token = localStorage.getItem( "token" );
 
+  const [ error, setError ] = useState( "" );
+
   const [ loginCred, setLoginCred ] = useState( {
     username: "",
     password: ""
   } );
-
-  const [ error, setError ] = useState( "" );
   
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
@@ -35,6 +35,7 @@ const Login = () => {
         push("/bubbles")
       } )
       .catch( err => {
+        console.log( err );
         setError("Username or Password incorrect. Please see Readme")
       })
   }
